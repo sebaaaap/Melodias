@@ -2,6 +2,16 @@ def transponer():
     # Escala cromática en sostenidos
     notas = ["do", "do#", "re", "re#", "mi", "fa", "fa#", "sol", "sol#", "la", "la#", "si"]
 
+    # Conversión de bemoles a sostenidos
+    equivalencias_bemoles = {
+        "sib": "la#",
+        "mib": "re#",
+        "lab": "sol#",
+        "reb": "do#",
+        "solb": "fa#",
+        "dob": "si"
+    }
+
     # Entrada de la melodía y el intervalo
     melodia = input("Ingrese la melodía: ").strip()
     lista_melodias = melodia.split()
@@ -55,6 +65,10 @@ def transponer():
         else:
             notaCentral = nota[:i]
             octava = int(nota[i:])
+
+        # Convertir bemoles a sostenidos si es necesario
+        if notaCentral in equivalencias_bemoles:
+            notaCentral = equivalencias_bemoles[notaCentral]
 
         # Encontrar la posición de la nota en la escala cromática
         posicion = notas.index(notaCentral)
