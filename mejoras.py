@@ -1,24 +1,14 @@
 def transponer():
-    # Escala cromática en sostenidos
+    # escala cromática en sosstenidos
     notas = ["do", "do#", "re", "re#", "mi", "fa", "fa#", "sol", "sol#", "la", "la#", "si"]
 
-    # Conversión de bemoles a sostenidos
-    equivalencias_bemoles = {
-        "sib": "la#",
-        "mib": "re#",
-        "lab": "sol#",
-        "reb": "do#",
-        "solb": "fa#",
-        "dob": "si"
-    }
 
-    # Entrada de la melodía y el intervalo
     melodia = input("Ingrese la melodía: ").strip()
     lista_melodias = melodia.split()
 
     inter = input("Ingrese el intervalo: ").strip()
 
-    # Función para definir cuántos semitonos corresponde al intervalo (usando if-elif)
+    # define cuaantos semitonos hay que sumar
     def definir_semitono(inter): 
         semitono = 0
 
@@ -51,43 +41,63 @@ def transponer():
 
         return semitono
 
-    # Función para transponer una nota
+    # pasa los bemoles a sostenidos
+    def convertir_bemol_a_sostenido(nota):
+        # busca los bemoles y devuelve su equivalencia
+        if "b" in nota:
+            if nota[:3] == "sib":
+                return "la#" + nota[3:]  
+            elif nota[:3] == "mib":
+                return "re#" + nota[3:]
+            elif nota[:3] == "lab":
+                return "sol#" + nota[3:]
+            elif nota[:3] == "reb":
+                return "do#" + nota[3:]
+            elif nota[:4] == "solb":
+                return "fa#" + nota[4:]
+            elif nota[:3] == "dob":
+                return "si" + nota[3:]
+        return nota  # caso contrario retorna la nota normal
+
+    # transpone la nota
     def transponer_nota(nota, semitono):
-        # Dividir la nota en parte musical y octava
+        # divide la nota en parte musical y octava
         i = 0
         while i < len(nota) and not nota[i].isdigit():
             i += 1
 
-        # Si la nota no tiene número, asignamos la octava por defecto (4)
+        # si la nota no tiene octva se le asigna 4 
         if i == len(nota):
             notaCentral = nota
-            octava = 4  # Octava por defecto
+            octava = 4  # octava por defecto
         else:
             notaCentral = nota[:i]
             octava = int(nota[i:])
 
-        # Convertir bemoles a sostenidos si es necesario
-        if notaCentral in equivalencias_bemoles:
-            notaCentral = equivalencias_bemoles[notaCentral]
+        # pasa los bemoles a sostenidos
+        notaCentral = convertir_bemol_a_sostenido(notaCentral)
 
-        # Encontrar la posición de la nota en la escala cromática
-        posicion = notas.index(notaCentral)
+        # busca la posicion en la escala cromática
+        if notaCentral in notas:
+            posicion = notas.index(notaCentral)
+        else:
+            return  # si hay error retorna nada
 
-        # Calcular nueva posición y nueva octava
-        nuevaPos = (posicion + semitono) % 12
-        nuevaOctava = octava + (posicion + semitono) // 12
+        
+        nuevaPos = (posicion + semitono) % 12 # caclula la nueva posicion
+        nuevaOctava = octava + (posicion + semitono) // 12 # calcula la nueva octava
 
-        # Combinar nota transpuesta con la nueva octava
+        # entrega la nueva nota y su octava correspondiente
         return notas[nuevaPos] + str(nuevaOctava)
 
-    # Determinar cuántos semitonos sumar
+    
     semitono = definir_semitono(inter)
 
-    # Transponer todas las notas de la melodía
+    # aqui traspone cada nota y la transforma
     transformadas = [transponer_nota(nota, semitono) for nota in lista_melodias]
 
-    # Mostrar el resultado
+    
     print("Melodía transpuesta:", " ".join(transformadas))
 
-# Llamar a la función principal
+
 transponer()
